@@ -1,21 +1,17 @@
+
+// efPqewVgkk1T+gSI2ck9McIrDNLTTFSOFMK24r2hhp8=
+//
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license.
+//
 const crypto = require('crypto');
-const fs = require('fs');
-
-var tls = require('tls');
-
-var options = {
-	key: fs.readFileSync('newkey.pem'),
-	cert: fs.readFileSync('cert.pem')
-  };
-
 const sharedSecret = "efPqewVgkk1T+gSI2ck9McIrDNLTTFSOFMK24r2hhp8="; // e.g. "+ZaRRMC8+mpnfGaGsBOmkIFt98bttL5YQRq3p2tXgcE="
 const bufSecret = Buffer(sharedSecret, "base64");
 
+var http = require('http');
 var PORT = process.env.port || process.env.PORT || 8080;
 
-
-
-tls.createServer(options,function(request, response) { 
+http.createServer(function(request, response) { 
 	var payload = '';
 	// Process the request
 	request.on('data', function (data) {
@@ -35,8 +31,7 @@ tls.createServer(options,function(request, response) {
 			
 			response.writeHead(200);
 			if (msgHash === auth) {
-				var receivedMsg = JSON.parse(payload);                                console.log(receivedMsg);
-
+				var receivedMsg = JSON.parse(payload);
 				var responseMsg = '{ "type": "message", "text": "You typed: ' + receivedMsg.text + '" }';	
 			} else {
 				var responseMsg = '{ "type": "message", "text": "Error: message sender cannot be authenticated." }';
